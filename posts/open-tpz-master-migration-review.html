@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Review mapping logic before a migration | Mustafa Alp</title>
+        <meta name="description" content="Use mapping inspection to prepare questions and validation cases before implementation.">
+        <meta name="theme-color" content="#10263d">
+        <meta property="og:title" content="Review mapping logic before a migration | Mustafa Alp">
+        <meta property="og:description" content="Use mapping inspection to prepare questions and validation cases before implementation.">
+        <meta property="og:type" content="article">
+        <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+        <link rel="stylesheet" href="../assets/style.css">
+        <script defer src="../assets/site.js"></script>
+    </head>
+    <body>
+        <a class="skip" href="#main">Skip to content</a>
+        <header>
+            <div class="wrap nav">
+                <a class="brand" href="../index.html">mustafa alp<span>.</span></a>
+                <nav aria-label="Main navigation">
+                    <a href="../index.html">Home</a>
+                    <a href="../tools.html">Tools &amp; Projects</a>
+                    <a href="../blog.html" aria-current="page">Blog</a>
+                    <a href="../cv.html">CV</a>
+                </nav>
+            </div>
+        </header>
+        <main id="main" class="wrap">
+            <article class="article">
+                <p class="eyebrow">Open Tpz Master / Migration review</p>
+                <h1>Review mapping logic before a migration</h1>
+                <p class="small">Mustafa Alp · Tutorial · Updated 6 October 2026</p>
+                <div class="note">
+                    Release validation pending. This scenario describes an inspection workflow; UI labels and application version have not yet been verified.
+                </div>
+                <p class="intro">Before changing a mapping implementation, record what the existing mapping is expected to do.</p>
+                <h2>The scenario</h2>
+                <p>You are preparing a SAP PO mapping for a migration review. The aim is to identify transformation rules and open questions before implementation begins.</p>
+                <h2>Build a review record</h2>
+                <ol>
+                    <li>Record the mapping name and the export you inspected.</li>
+                    <li>Choose important target fields and trace their displayed mapping trees.</li>
+                    <li>Record source dependencies, conditions and defaults visible in the graph.</li>
+                    <li>Flag custom logic or dependencies that need inspection in the original environment.</li>
+                    <li>Translate the findings into validation cases for the target implementation.</li>
+                </ol>
+                
+
+                <h2>Use a simple checklist</h2>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Review area</th>
+                                <th>Question to record</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Inputs</td>
+                                <td>Which source fields contribute to this target?</td>
+                            </tr>
+                            <tr>
+                                <td>Conditions</td>
+                                <td>When should the value or target node be produced?</td>
+                            </tr>
+                            <tr>
+                                <td>Defaults</td>
+                                <td>What is expected when an input is absent?</td>
+                            </tr>
+                            <tr>
+                                <td>Dependencies</td>
+                                <td>Does this rule require further inspection outside the graph?</td>
+                            </tr>
+                            <tr>
+                                <!-- Additional rows -->
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- Continue with Open Tpz Master section -->
+            </article>
+
+        </main>
+
+        <!-- Footer -->
+    </body>
+
+</html>
