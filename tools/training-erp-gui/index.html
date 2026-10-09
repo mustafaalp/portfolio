@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Training ERP GUI</title><meta name="description" content="A Python and PySide6 desktop application for teaching ERP integration concepts through familiar, transaction-style screens."><meta name="theme-color" content="#10263d"><meta property="og:title" content="Training ERP GUI"><meta property="og:description" content="A Python and PySide6 desktop application for teaching ERP integration concepts through familiar, transaction-style screens."><meta property="og:type" content="website"><link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg"><link rel="stylesheet" href="../../assets/style.css"><script defer src="../../assets/site.js"></script></head><body><a class="skip" href="#main">Skip to content</a><header><div class="wrap nav"><a class="brand" href="../../index.html">mustafa alp<span>.</span></a><nav aria-label="Main navigation"><a href="../../index.html">Home</a><a href="../../tools.html" aria-current="page">Tools &amp; Projects</a><a href="../../blog.html">Blog</a><a href="../../cv.html">CV</a></nav></div></header><main id="main" class="wrap"><article class="article">
+  <p class="eyebrow">Developer tools / Integration training</p>
+  <h1>Training ERP GUI</h1>
+  <p class="intro">A desktop learning tool for explaining ERP integration concepts through familiar, transaction-style screens.</p>
+  <p>I built Training ERP GUI to support hands-on lessons with a junior consultant. It gives us a visual way to discuss configuration, message processing and monitoring, using a Python application built with PySide6.</p>
+  <div class="actions">
+    <a class="button primary" href="#training-screens">Explore the screens</a>
+    <a class="button" href="#learning-scenarios">Training scenarios</a>
+  </div>
+
+  <section class="section" id="purpose">
+    <h2>Why I built it</h2>
+    <p>When teaching integration, explaining a configuration field in isolation is rarely enough. It helps to show where the field appears, how it relates to other settings and where a consultant would look when investigating a message.</p>
+    <p>This project turns those conversations into practical demonstrations. Learners can follow a screen-based workflow while the lesson focuses on the meaning of the configuration and the questions to ask.</p>
+  </section>
+
+  <section class="section" id="training-screens">
+    <h2>What you can explore</h2>
+    <p>The application includes training screens inspired by common SAP integration transactions. The focus is on presenting their concepts and workflows in an educational desktop interface.</p>
+    <h3>Connections and communication settings</h3>
+    <ul>
+      <li><strong>SM59-style screens:</strong> discuss RFC destinations and connection configuration.</li>
+      <li><strong>WE21-style screens:</strong> introduce ports used in IDoc communication.</li>
+      <li><strong>WE20-style screens:</strong> explain partner profiles and their role in an integration setup.</li>
+    </ul>
+    <h3>Messages, testing and monitoring</h3>
+    <ul>
+      <li><strong>WE19-style screens:</strong> introduce the structure of an IDoc testing workflow.</li>
+      <li><strong>SM58-style screens:</strong> discuss transactional RFC monitoring concepts.</li>
+      <li><strong>SPROXY-related views:</strong> support lessons about proxy-based integration.</li>
+      <li><strong>IDoc and proxy monitoring views:</strong> demonstrate selection criteria, result tables and message-oriented investigation.</li>
+    </ul>
+    <h3>Configuration examples</h3>
+    <p>JSON-backed example data and configuration provide a practical foundation for the training screens. They make it possible to prepare lesson content and discuss how screen inputs relate to stored values.</p>
+  </section>
+
+  <!-- Add real application screenshots here once image files are available.
+       Example path from this page: ../../assets/images/training-erp-gui-overview.png
+       Do not add an img element until the file exists. -->
+
+  <section class="section" id="learning-scenarios">
+    <h2>How I use it in training</h2>
+    <h3>1. Explain an IDoc configuration</h3>
+    <p>Walk through destination, port and partner-profile concepts. Ask the learner what each setting represents and how the pieces relate to the communication scenario.</p>
+    <h3>2. Practise a monitoring conversation</h3>
+    <p>Start with selection criteria, display example results and discuss what to inspect next. The goal is to help the learner build an investigation process rather than simply memorize screen names.</p>
+    <h3>3. Connect interface fields to configuration data</h3>
+    <p>Use a configuration screen and its JSON representation to demonstrate how entered values can be collected, stored and loaded by an application.</p>
+  </section>
+
+  <section class="section" id="technology">
+    <h2>Built with</h2>
+    <ul>
+      <li><strong>Python</strong> for application logic.</li>
+      <li><strong>PySide6 / Qt</strong> for desktop windows, forms and tables.</li>
+      <li><strong>JSON</strong> for example data and configuration.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="scope">
+    <h2>Scope of the project</h2>
+    <p>Training ERP GUI is an independent educational project. Its screens illustrate selected integration concepts; they do not reproduce the full behavior of SAP transactions or constitute a complete ERP system.</p>
+    <p>On-screen examples should not be treated as evidence of a transaction running in a live SAP backend. Practical work in a real environment remains part of learning configuration, authorizations and runtime behavior.</p>
+    <p class="small">This project is not an official SAP product and is not affiliated with or endorsed by SAP.</p>
+  </section>
+
+  <!-- OWNER: Add the verified repository, release URL, installation instructions
+       and supported platform details here. No download URL has been supplied. -->
+
+  <div class="actions">
+    <a class="button" href="../../tools.html">All tools &amp; projects</a>
+    <a class="button" href="../../blog.html">Read the blog</a>
+  </div>
+</article></main><footer><div class="wrap footer-inner"><span>© 2026 Mustafa Alp · Integration notes & experience</span><a href="https://www.linkedin.com/in/mustafa-alp/">Connect on LinkedIn</a></div></footer></body></html>

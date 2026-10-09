@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Training ERP GUI — Getting Started</title><meta name="description" content="Getting started with Training ERP GUI: prepare a training session, explore integration screens and practise with example data."><meta name="theme-color" content="#10263d"><meta property="og:title" content="Training ERP GUI — Getting Started"><meta property="og:description" content="Getting started with Training ERP GUI: prepare a training session, explore integration screens and practise with example data."><meta property="og:type" content="website"><link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg"><link rel="stylesheet" href="../../assets/style.css"><script defer src="../../assets/site.js"></script></head><body><a class="skip" href="#main">Skip to content</a><header><div class="wrap nav"><a class="brand" href="../../index.html">mustafa alp<span>.</span></a><nav aria-label="Main navigation"><a href="../../index.html">Home</a><a href="../../tools.html" aria-current="page">Tools &amp; Projects</a><a href="../../blog.html">Blog</a><a href="../../cv.html">CV</a></nav></div></header><main id="main" class="wrap"><article class="article">
+  <a class="small" href="../../tools/training-erp-gui/index.html">Training ERP GUI overview</a>
+  <p class="eyebrow" style="margin-top:28px">Documentation / Getting started</p>
+  <h1>Learn the workflow.<br>Understand the configuration.</h1>
+  <p class="intro">Use Training ERP GUI to guide a lesson through integration configuration and monitoring concepts, with a Python and PySide6 desktop interface.</p>
+  <div class="note"><strong>Guide status:</strong> This guide describes the training workflow. Installation commands, supported platforms and exact screen labels must be checked against the release you use.</div>
+
+  <nav aria-label="On this page">
+    <a href="#installation">Installation</a>
+    <a href="#first-session">First session</a>
+    <a href="#tutorials">Tutorials</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+  </nav>
+
+  <section class="section" id="installation">
+    <h2>Installation and launch</h2>
+    <p>Training ERP GUI is built with Python and PySide6. Use the installation instructions supplied with your copy of the application.</p>
+    <ol>
+      <li><strong>Obtain the application.</strong> Check the <a href="../../tools/training-erp-gui/index.html">project page</a> for repository and release information.</li>
+      <li><strong>Check the release requirements.</strong> Confirm the supported operating system and, for a source distribution, the required Python version and dependencies.</li>
+      <li><strong>Keep the supplied files together.</strong> Preserve the directory structure for application modules, resources and example data.</li>
+      <li><strong>Follow the documented launch method.</strong> Use the entry point or launcher specified by that release.</li>
+    </ol>
+    <p class="small">A verified download link and release-specific installation commands have not yet been added to this guide.</p>
+    <!-- OWNER: Replace this installation section with verified release requirements,
+         repository/download URL, dependency installation and the actual entry point. -->
+  </section>
+
+  <section class="section" id="first-session">
+    <h2>Your first training session</h2>
+    <ol>
+      <li><strong>Choose one learning goal.</strong> Start with connection settings, IDoc configuration or a monitoring workflow.</li>
+      <li><strong>Prepare example data.</strong> Use the sample files supplied with your version, or an instructor-prepared copy with the expected structure.</li>
+      <li><strong>Open a relevant screen.</strong> Navigate through the application to the configuration or monitoring view used in your lesson.</li>
+      <li><strong>Explain the fields before changing them.</strong> Ask what each value represents and which part of the integration it describes.</li>
+      <li><strong>Record the outcome.</strong> Summarize what the learner can now explain and what still needs to be checked in a real system.</li>
+    </ol>
+    <p>Use fictitious systems, partners and message identifiers so the same exercise can be repeated without exposing operational data.</p>
+  </section>
+
+  <section class="section" id="tutorials">
+    <h2>Training scenarios</h2>
+    <p>These exercises are discussion guides. They do not imply that an action in the training interface executes a transaction in a live SAP system.</p>
+
+    <section id="connection-settings">
+      <h3>1. Discuss connection settings</h3>
+      <p><strong>Learning goal:</strong> explain the purpose of a connection destination and distinguish its identifier from the settings it contains.</p>
+      <ol>
+        <li>Open the SM59-style training screen available in your version.</li>
+        <li>Choose an example destination and identify the visible configuration fields.</li>
+        <li>Ask the learner which values describe the intended remote system and which values would need verification.</li>
+        <li>Write down the checks you would perform separately in an authorized test environment.</li>
+      </ol>
+      <p><strong>Expected outcome:</strong> the learner can explain the example configuration without treating the displayed values as proof of connectivity.</p>
+    </section>
+
+    <section id="idoc-configuration">
+      <h3>2. Walk through IDoc configuration</h3>
+      <p><strong>Learning goal:</strong> describe how destination, port and partner-profile concepts relate to an integration scenario.</p>
+      <ol>
+        <li>Define a simple fictional sender and receiver.</li>
+        <li>Discuss the destination using the relevant connection screen.</li>
+        <li>Open the WE21-style view and inspect the example port settings.</li>
+        <li>Open the WE20-style view and discuss the partner configuration.</li>
+        <li>Summarize the role of each configuration object in your chosen scenario.</li>
+      </ol>
+      <p><strong>Expected outcome:</strong> a short explanation of the configuration relationships and any questions to verify in the actual environment.</p>
+    </section>
+
+    <section id="message-monitoring">
+      <h3>3. Practise a monitoring workflow</h3>
+      <p><strong>Learning goal:</strong> move from a question about a message to a focused set of results.</p>
+      <ol>
+        <li>Open an IDoc or proxy monitoring view provided by your version.</li>
+        <li>Review the available selection fields and define what you want to find.</li>
+        <li>Run the selection using the screen's execute action.</li>
+        <li>Inspect the result table and identify the fields that would help you investigate further.</li>
+        <li>Explain the next action you would take and the evidence you would need.</li>
+      </ol>
+      <p><strong>Expected outcome:</strong> a repeatable investigation approach using the example records.</p>
+    </section>
+
+    <section id="configuration-data">
+      <h3>4. Connect the interface to JSON data</h3>
+      <p><strong>Learning goal:</strong> understand how a desktop application can represent screen values in a configuration file.</p>
+      <ol>
+        <li>Choose a screen backed by JSON example data in your version.</li>
+        <li>Make a copy of the corresponding file before the lesson.</li>
+        <li>Compare the visible values with the fields in the JSON file.</li>
+        <li>If that screen supports saving, change an example value and compare the resulting file.</li>
+        <li>Explain which parts of this exercise describe the training application's storage rather than a real ERP backend.</li>
+      </ol>
+      <p><strong>Expected outcome:</strong> the learner can describe the relationship between interface inputs and stored example data.</p>
+    </section>
+  </section>
+
+  <!-- OWNER: Insert real screenshots next to the relevant steps.
+       Image paths from this page start with ../../assets/images/.
+       Add alternative text and identify the application version used. -->
+
+  <section class="section" id="troubleshooting">
+    <h2>Troubleshooting</h2>
+    <h3>The application does not start</h3>
+    <p>Follow the launch method documented for your release. When running from source, check that the intended Python environment contains the required dependencies. Capture the actual error message before changing the setup.</p>
+    <h3>No example records appear</h3>
+    <p>Check your selection criteria and confirm that the expected example data files are present. Compare their location and structure with the release instructions.</p>
+    <h3>A JSON file cannot be loaded</h3>
+    <p>Check that the file is valid JSON and matches the expected structure. Restore your working copy if a manual edit introduced an error.</p>
+    <h3>The screen differs from this guide</h3>
+    <p>Check the application version and its release notes. The screen names in this guide describe training areas; available fields and actions can vary between versions.</p>
+    <h3>Reporting a problem</h3>
+    <p>Include the application version, operating system, affected screen, steps to reproduce, expected result and actual error message. Share only a minimal example that you are permitted to disclose.</p>
+    <p><a href="../../tools/training-erp-gui/index.html">Return to the project page for availability and contact information.</a></p>
+  </section>
+
+  <section class="section" id="scope">
+    <h2>Scope and limitations</h2>
+    <p>Training ERP GUI is an independent educational project. It demonstrates selected integration concepts and screen workflows; it is not a complete ERP system or a replacement for practical experience in a real environment.</p>
+    <p>The presence of a transaction-style screen does not establish full functional equivalence with that transaction. Validate any live integration behavior separately.</p>
+    <p class="small">This project is not an official SAP product and is not affiliated with or endorsed by SAP.</p>
+  </section>
+
+  <div class="actions">
+    <a class="button primary" href="../../tools/training-erp-gui/index.html">Project overview</a>
+    <a class="button" href="../../tools.html">All tools &amp; projects</a>
+  </div>
+</article></main><footer><div class="wrap footer-inner"><span>© 2026 Mustafa Alp · Integration notes & experience</span><a href="https://www.linkedin.com/in/mustafa-alp/">Connect on LinkedIn</a></div></footer></body></html>
