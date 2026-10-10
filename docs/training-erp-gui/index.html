@@ -16,15 +16,27 @@
   <section class="section" id="installation">
     <h2>Installation and launch</h2>
     <p>Training ERP GUI is built with Python and PySide6. Use the installation instructions supplied with your copy of the application.</p>
-    <ol>
-      <li><strong>Obtain the application.</strong> Check the <a href="../../tools/training-erp-gui/index.html">project page</a> for repository and release information.</li>
-      <li><strong>Check the release requirements.</strong> Confirm the supported operating system and, for a source distribution, the required Python version and dependencies.</li>
-      <li><strong>Keep the supplied files together.</strong> Preserve the directory structure for application modules, resources and example data.</li>
-      <li><strong>Follow the documented launch method.</strong> Use the entry point or launcher specified by that release.</li>
-    </ol>
-    <p class="small">A verified download link and release-specific installation commands have not yet been added to this guide.</p>
-    <!-- OWNER: Replace this installation section with verified release requirements,
-         repository/download URL, dependency installation and the actual entry point. -->
+                <p>
+                    Clone the repository and install the required dependencies.
+                    Python and Git must be installed on your computer.
+                </p>
+
+                <!-- Replace YOUR-USERNAME and main.py with the actual values. -->
+                <pre class="code-block"><code>git clone https://gitlab.com/alp.mustf/trainigerpguipublic.git
+                cd trainigerpguipublic
+                python -m venv .venv</code></pre>
+
+                <h3>Windows — PowerShell</h3>
+
+                <pre class="code-block"><code>.\.venv\Scripts\Activate.ps1
+                python -m pip install -r requirements.txt
+                python main.py</code></pre>
+
+                <h3>Linux / macOS</h3>
+
+                <pre class="code-block"><code>source .venv/bin/activate
+                python -m pip install -r requirements.txt
+                python main.py</code></pre>    <p class="small">A verified download link and release-specific installation commands have not yet been added to this guide.</p>
   </section>
 
   <section class="section" id="first-session">
@@ -110,7 +122,7 @@
     <h3>The screen differs from this guide</h3>
     <p>Check the application version and its release notes. The screen names in this guide describe training areas; available fields and actions can vary between versions.</p>
     <h3>Reporting a problem</h3>
-    <p>Include the application version, operating system, affected screen, steps to reproduce, expected result and actual error message. Share only a minimal example that you are permitted to disclose.</p>
+    <p>You may use feedback button in the application. Please include the application version, operating system, affected screen, steps to reproduce, expected result and actual error message. Share only a minimal example that you are permitted to disclose.</p>
     <p><a href="../../tools/training-erp-gui/index.html">Return to the project page for availability and contact information.</a></p>
   </section>
 

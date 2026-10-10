@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>How to send Idocs to Sap Btp</title>
+        <meta name="description" content="Complete guide to send your first idoc message">
+        <meta name="theme-color" content="#10263d">
+        <meta property="og:title" content="How to send Idocs to Sap Btp">
+        <meta property="og:description" content="Complete guide to send your first idoc message">
+        <meta property="og:type" content="article">
+        <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+        <link rel="stylesheet" href="../assets/style.css">
+        <script defer src="../assets/site.js"></script>
+		<style>
+		table, th, td {
+		  border:1px solid black;
+		}
+		</style>
+    <meta name="author" content="Mustafa Alp"><style>
+.article {overflow-wrap:anywhere}
+.article h3 {font-size:1.35rem; margin-top:28px}
+.blog-image {width:100%;margin:32px auto}
+.blog-image img {display:block;max-width:100%;height:auto;border:1px solid #dce3eb;border-radius:8px}
+.blog-image figcaption {margin-top:10px;color:#526379;font-size:14px;text-align:center}
+.code-block {max-width:100%;overflow-x:auto;padding:20px 24px;background:#10263d;color:#e6edf3;border-radius:8px;text-align:left}
+.article .code-block code {padding:0;background:transparent;color:inherit;white-space:pre;font:14px/1.7 Consolas,monospace}
+</style></head>
+    <body>
+        <a class="skip" href="#main">Skip to content</a>
+        <header><div class="wrap nav"><a class="brand" href="../index.html">mustafa alp<span>.</span></a><nav aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tools.html">Tools &amp; Projects</a><a href="../blog.html" aria-current="page">Blog</a><a href="../cv.html">CV</a></nav></div></header>
+        <main id="main" class="wrap"><article class="article"><p class="eyebrow">Training Erp Gui - Tutorial</p><h1>How to send Idocs to Sap Btp</h1><p class="small">Mustafa Alp · <time datetime="2026-10-11">2026-10-11</time></p><h2>Introduction</h2>
+
+<p>When working with SAP integration technologies, understanding how IDocs are configured and transmitted is an essential skill.</p>
+
+<p>In a traditional SAP ERP environment, sending an IDoc to an external system involves several configuration steps, including RFC destinations, communication ports, partner profiles, and IDoc processing.</p>
+
+<p>But what if you want to learn and practice these concepts without having access to an SAP ERP system?</p>
+
+<p>This is one of the reasons I developed Training ERP GUI, an independent Python-based educational tool designed to simulate common ERP integration transactions and workflows.</p>
+
+<p>In this tutorial, we will configure an outbound IDoc scenario using Training ERP GUI and send an IDoc message to SAP BTP Integration Suite.</p>
+
+<p>The process follows familiar SAP ERP configuration concepts, making it useful for students, junior integration consultants, and developers learning SAP integration technologies.</p>
+
+<h2>1. Integration Scenario Overview</h2>
+
+<p>Our scenario is straightforward:</p>
+
+<p>Training ERP GUI → HTTPS / IDoc SOAP → SAP BTP Integration Suite</p>
+
+<p>We will use the ORDERS05 IDoc basic type with the ORDERS message type</p>
+
+<p>1. Create an IDoc sender integration flow in SAP BTP.<br>
+2. Configure an HTTP destination using SM59.<br>
+3. Create an IDoc communication port using WE21.<br>
+4. Configure outbound partner parameters using WE20.<br>
+5. Send a test IDoc using WE19 and monitor the result.</p>
+
+<p>Training ERP GUI simulates the ERP-side configuration and sends the message directly over HTTPS. It does not reproduce the complete SAP ABAP IDoc runtime, transactional RFC infrastructure, or production delivery guarantees.</p>
+
+<h2>2. Configure the IDoc Sender in SAP BTP Integration Suite</h2>
+
+<p>First, we need to create an integration flow that accepts incoming IDoc messages.</p>
+
+<p>Open SAP Integration Suite and navigate to Cloud Integration.</p>
+
+<p>Create a new integration flow.</p>
+
+<p>For this tutorial, use a simple integration process with an IDoc Sender adapter and a processing step that allows you to inspect the received message.</p>
+
+<h3>Sender Adapter Configuration</h3>
+
+<p>Select the sender channel and configure the adapter as follows:</p>
+
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Adapter Type</td>
+    <td>IDoc</td>
+  </tr>
+  <tr>
+    <td>Address</td>
+    <td>/malp/poc</td>
+  </tr>
+  <tr>
+    <td>Authentication</td>
+    <td>client credentials as Basic</td>
+  </tr>
+  <tr>
+    <td>Transport</td>
+    <td>HTTPS</td>
+  </tr>
+  <tr>
+    <td>Message Protocol</td>
+    <td>IDoc SOAP</td>
+  </tr>
+ </table>
+
+
+
+<p>The relative address is configured in the adapter. After deployment, SAP Integration Suite exposes the corresponding runtime endpoint.</p>
+
+<p>For example:</p>
+
+<pre class="code-block"><code>https://your-tenant-host/cxf/idoc/malp/poc</code></pre>
+
+<p>This is an illustrative URL. Always copy the actual deployed endpoint from SAP Integration Suite rather than constructing it manually.</p>
+
+<p>Deploy the integration flow and verify that it is running.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img01.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img01.png" alt="SAP BTP integration flow with IDoc Sender adapter configuration." loading="lazy" decoding="async"></a></figure>
+
+<h2>3. Configure the RFC Destination — SM59</h2>
+
+<p>Now open Training ERP GUI.</p>
+
+<p>In the transaction command field, enter:</p>
+
+<pre class="code-block"><code>SM59</code></pre>
+
+<p>This transaction is used to configure RFC destinations in SAP ERP systems.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img02.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img02.png" alt="This transaction is used to configure RFC destinations in SAP ERP systems." loading="lazy" decoding="async"></a></figure>
+
+<p>In our simulator, we will use an HTTP destination to define the connection to SAP Integration Suite.</p>
+
+<h3>Create an HTTP Destination</h3>
+
+<p>Create a new RFC destination with the following configuration:</p>
+
+
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td>RFC Destination</td>
+    <td>BTP_IDOC</td>
+  </tr>
+  <tr>
+    <td>Connection Type</td>
+    <td>G - HTTP Connection to External Server</td>
+  </tr>
+  <tr>
+    <td>Description</td>
+    <td>SAP BTP IDoc Integration</td>
+  </tr>
+  <tr>
+    <td>Target Host</td>
+    <td>your-tenant-host</td>
+  </tr>
+  <tr>
+    <td>Path Prefix</td>
+    <td>/cxf/idoc/malp/poc</td>
+  </tr>
+ </table>
+
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img03.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img03.png" alt="Create a new RFC destination with the following configuration:" loading="lazy" decoding="async"></a></figure>
+
+<h3>Logon and Security</h3>
+
+<p>Configure the authentication details required by your SAP BTP endpoint.</p>
+
+<p>For an educational scenario, this may involve Basic Authentication if it is supported and enabled for your tenant.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img04.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img04.png" alt="keys" loading="lazy" decoding="async"></a></figure>
+
+<p>Use a dedicated technical identity with the necessary permissions. Do not store real credentials in a public JSON file or commit them to the project repository.</p>
+
+<p>Save the destination.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img05.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img05.png" alt="Training ERP GUI — SM59 HTTP destination configuration." loading="lazy" decoding="async"></a></figure>
+
+<h2>4. Configure the IDoc Port — WE21</h2>
+
+<p>The next step is to create an IDoc communication port.</p>
+
+<p>In Training ERP GUI, enter:</p>
+
+<pre class="code-block"><code>WE21</code></pre>
+
+<p>The Port Definition screen allows us to create communication ports used in IDoc processing.</p>
+
+<h3>Create a Port</h3>
+
+<p>Select the Transactional RFC port category and create a new port.</p>
+
+<p>Example configuration:</p>
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Port</td>
+    <td>BTPPORT</td>
+  </tr>
+  <tr>
+    <td>Description</td>
+    <td>BTP IDoc Outbound Port</td>
+  </tr>
+  <tr>
+    <td>RFC Destination</td>
+    <td>BTP_IDOC</td>
+  </tr>
+ </table>
+
+<p>Save the configuration.</p>
+
+<p>The communication port now references the RFC destination created in the previous step.</p>
+
+<p>Important: In a real SAP ERP system, transactional RFC ports have specific ALE/tRFC behavior. Training ERP GUI uses the port-to-destination relationship to simulate outbound routing and sends the IDoc through its Python HTTP implementation.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img06.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img06.png" alt="Training ERP GUI — WE21 port configuration." loading="lazy" decoding="async"></a></figure>
+
+<h2>5. Configure the Partner Profile — WE20</h2>
+
+<p>Next, we need to define which messages should be sent to the receiver system.</p>
+
+<p>Enter:</p>
+
+<pre class="code-block"><code>WE20</code></pre>
+
+<p>This opens the Partner Profiles transaction.</p>
+
+<h3>Create a Logical System Partner</h3>
+
+<p>Select partner type:</p>
+
+<pre class="code-block"><code>LS — Logical System</code></pre>
+
+<p>Create a partner representing the receiving system.</p>
+
+<p>Example:</p>
+
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Partner Number</td>
+    <td>BTPQA</td>
+  </tr>
+  <tr>
+    <td>Partner Type</td>
+    <td>LS</td>
+  </tr>
+ </table>
+
+<h3>Configure Outbound Parameters</h3>
+
+<p>Add a new outbound parameter.</p>
+
+
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Message Type</td>
+    <td>ORDERS</td>
+  </tr>
+  <tr>
+    <td>Receiver Port</td>
+    <td>BTPPORT</td>
+  </tr>
+  <tr>
+    <td>Basic Type</td>
+    <td>ORDERS05</td>
+  </tr>
+ </table>
+
+<p>Save the partner profile.</p>
+
+<p>At this point, the simulator has enough configuration to determine where an outbound ORDERS IDoc should be sent.</p>
+
+<p>The simulated configuration chain is:</p>
+
+<pre class="code-block"><code>Partner Profile → Receiver Port → RFC Destination → HTTPS Endpoint</code></pre>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img07.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img07.png" alt="Training ERP GUI — WE20 outbound parameters." loading="lazy" decoding="async"></a></figure>
+
+<h2>6. Prepare a Test IDoc — WE19</h2>
+
+<p>Now we are ready to send a test message.</p>
+
+<h3>Get an Idoc number from WE02</h3>
+
+<p>Set starting date and press execute button.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img08.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img08.png" alt="we02 criteria" loading="lazy" decoding="async"></a></figure>
+
+<p>Select an Idoc and press CTRL-C to copy Idoc number</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img08.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img08.png" alt="we02" loading="lazy" decoding="async"></a></figure>
+
+<h3>Sending Idoc via WE19</h3>
+
+<p>Enter:</p>
+
+<pre class="code-block"><code>WE19</code></pre>
+
+<p>This opens the IDoc Test Tool.</p>
+
+<p>In a real SAP ERP environment, WE19 is commonly used to create and process test IDocs.</p>
+
+<p>Training ERP GUI provides a simplified implementation of this workflow.</p>
+
+<p>Enter IDoc number copied from WE02.</p>
+
+<p>For this example, we use:</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img10.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img10.png" alt="we19" loading="lazy" decoding="async"></a></figure>
+
+<table>
+  <tr>
+    <td>Basic Type</td>
+    <td>ORDERS05</td>
+  </tr>
+  <tr>
+    <td>Message Type</td>
+    <td>ORDERS</td>
+  </tr>
+  <tr>
+    <td>Direction</td>
+    <td>Outbound</td>
+  </tr>
+ </table>
+
+<p>The IDoc contains a control record (EDI_DC40) and business data segments.</p>
+
+<h3>Send the IDoc to SAP BTP</h3>
+
+<p>In WE19, select the outbound processing option.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img11.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img11.png" alt="Standard outbound monitoring" loading="lazy" decoding="async"></a></figure>
+
+<p>Training ERP GUI performs the following simulated operations:</p>
+
+<p>1. Reads the IDoc control record.<br>
+2. Identifies the relevant partner profile.<br>
+3. Resolves the receiver port.<br>
+4. Retrieves the corresponding RFC destination.<br>
+5. Constructs the HTTPS target URL.<br>
+6. Wraps the IDoc in a SOAP envelope.<br>
+7. Sends the request to SAP Integration Suite.</p>
+
+<h2>7. Monitor the Message in SAP BTP</h2>
+
+<p>Return to SAP Integration Suite.</p>
+
+<p>Open the message monitoring application and locate the incoming message.</p>
+
+<p>Inspect the following:</p>
+
+
+<ul>
+  <li>Message processing status</li>
+  <li>Sender adapter and integration flow</li>
+  <li>Received IDoc payload</li>
+  <li>Message processing log</li>
+  <li>Any exception details</li>
+</ul>  
+
+<p>SAP Integration Suite&#x27;s IDoc sender adapter provides IDoc-specific headers, including SapIDocType and SapIDocTransferId, which can help with monitoring and correlation.</p>
+
+<p>A successful HTTP response indicates that the request was accepted at the relevant communication layer. It does not automatically prove that all downstream business processing completed successfully.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img12.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img12.png" alt="http 200" loading="lazy" decoding="async"></a><figcaption>http response 200</figcaption></figure>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img13.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img13.png" alt="monitoring owerview" loading="lazy" decoding="async"></a><figcaption>monitoring owerview</figcaption></figure>
+
+<figure class="blog-image"><a href="../assets/images/teg/t01-img14.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t01-img14.png" alt="SapIDocType and SapIDocTransferId" loading="lazy" decoding="async"></a><figcaption>SapIDocType and SapIDocTransferId</figcaption></figure>
+
+<h2>8. What This Tutorial Demonstrates</h2>
+
+<p>By completing this scenario, you will have practiced several important integration concepts:</p>
+
+<ul>
+
+  <li>RFC destination configuration</li>
+  <li>IDoc port configuration</li>
+  <li>Partner profile configuration</li>
+  <li>SOAP-based IDoc communication</li>
+  <li>HTTPS connectivity</li>
+  <li>SAP Integration Suite IDoc sender configuration</li>
+  <li>Message monitoring and troubleshooting</li>
+</ul>  
+
+<p>More importantly, you will have followed a workflow similar to the one used when configuring IDoc communication in SAP ERP systems.</p>
+
+<p>Training ERP GUI is not a replacement for SAP ERP or SAP Integration Suite. Its purpose is to provide an accessible environment for learning the underlying concepts and practicing common configuration workflows.</p>
+
+<h2>Conclusion
+</h2>
+
+<p>Understanding IDoc communication requires more than knowing how to send an XML message.</p>
+
+<p>It involves understanding the relationship between logical systems, partner profiles, communication ports, destinations, message structures, and integration middleware.</p>
+
+<p>Training ERP GUI brings these concepts together in a standalone educational environment, allowing developers and students to experiment with ERP-style integration workflows without requiring a complete SAP ERP installation.</p>
+
+<p>This tutorial is one example of how the application can be used for hands-on integration training.</p>
+
+<h2>Project
+</h2>
+
+<h3>Training ERP GUI
+
+</h3>
+
+<p>An independent educational ERP integration simulator built with Python and PySide6.</p>
+
+<p>Project repository: https://gitlab.com/alp.mustf/trainigerpguipublic.git</p>
+
+<p>Feedback, suggestions, and contributions are welcome!</p>
+
+<h2>Disclaimer</h2>
+
+<p>Training ERP GUI is an independent educational project and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+
+<p>SAP and other referenced product names are trademarks or registered trademarks of their respective owners. All examples in this article use illustrative configurations and synthetic test data.</p><div class="actions"><a class="button" href="../blog.html">Blog</a></div></article></main><footer><div class="wrap footer-inner"><span>© 2026 Mustafa Alp · Integration notes & experience</span><a href="https://www.linkedin.com/in/mustafa-alp/">Connect on LinkedIn</a></div></footer></body></html>
