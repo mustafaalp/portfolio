@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>How to Send XI Messages to SAP BTP Integration Suite Using Training ERP GUI</title>
+        <meta name="description" content="Complete guide to send your first XI message">
+        <meta name="theme-color" content="#10263d">
+        <meta property="og:title" content="How to Send XI Messages to SAP BTP Integration Suite Using Training ERP GUI">
+        <meta property="og:description" content="Complete guide to send your first XI message">
+        <meta property="og:type" content="article">
+        <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+        <link rel="stylesheet" href="../assets/style.css">
+        <script defer src="../assets/site.js"></script>
+		<style>
+		table, th, td {
+		  border:1px solid black;
+		}
+		img.smaller {
+			height: 50%;
+			width: 50%;
+		}
+		</style>
+    <meta name="author" content="Mustafa Alp"><style>
+.article {overflow-wrap:anywhere}
+.article h3 {font-size:1.35rem; margin-top:28px}
+.blog-image {width:100%;margin:32px auto}
+.blog-image img {display:block;max-width:100%;height:auto;border:1px solid #dce3eb;border-radius:8px}
+.blog-image figcaption {margin-top:10px;color:#526379;font-size:14px;text-align:center}
+.code-block {max-width:100%;overflow-x:auto;padding:20px 24px;background:#10263d;color:#e6edf3;border-radius:8px;text-align:left}
+.article .code-block code {padding:0;background:transparent;color:inherit;white-space:pre;font:14px/1.7 Consolas,monospace}
+</style></head>
+    <body>
+        <a class="skip" href="#main">Skip to content</a>
+        <header><div class="wrap nav"><a class="brand" href="../index.html">mustafa alp<span>.</span></a><nav aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tools.html">Tools &amp; Projects</a><a href="../blog.html" aria-current="page">Blog</a><a href="../cv.html">CV</a></nav></div></header>
+        <main id="main" class="wrap"><article class="article"><p class="eyebrow">Training Erp Gui - Tutorial</p><h1>How to Send XI Messages to SAP BTP Integration Suite Using Training ERP GUI</h1><p class="small">Mustafa Alp · <time datetime="2026-10-11">2026-10-11</time></p><h2>Introduction</h2>
+
+<p>SAP Process Integration (PI) and Process Orchestration (PO) have traditionally provided the infrastructure for exchanging XML messages between enterprise systems using the XI messaging protocol.</p>
+
+<p>With SAP Integration Suite on SAP Business Technology Platform (SAP BTP), developers can continue working with XI-based integration scenarios through the XI sender adapter.</p>
+
+<p>However, testing XI communication usually requires access to an SAP system capable of generating and sending XI messages.</p>
+
+<p>To make this process easier to explore, I developed Training ERP GUI, an independent, Python-based educational application that simulates selected ERP integration transactions and communication workflows.</p>
+
+<p>In this tutorial, we will walk through how to create a Service Interface, generate a proxy object, configure an HTTP destination, and send an XI message from Training ERP GUI to SAP Integration Suite.</p>
+
+<p>We will also introduce DesignObjectCreator, a separate tool I developed to manage integration design objects.</p>
+
+<h2>1. Architecture Overview
+</h2>
+
+<p>Our example integration scenario consists of the following components:</p>
+
+<pre class="code-block"><code>Training ERP GUI
+    |
+    | SPROXY - Proxy Simulation
+    |
+    | XI SOAP Message
+    v
+HTTP Destination (SM59)
+    |
+    v
+HTTP Sender/Receiver (SXMB_ADM)
+    |
+    | HTTPS
+    v
+SAP BTP Integration Suite
+    |
+    | XI Sender Adapter
+    v
+Integration Flow
+    |
+    | Message Processing
+    v
+Receiver System</code></pre>
+
+<p>The application simulates the sender-side integration workflow, while SAP Integration Suite handles the actual message processing.</p>
+
+<p>The main components are:</p>
+
+<p>DesignObjectCreator: Creates and manages Service Interface definitions and XML Schema (XSD) data types.<br>
+SPROXY: Provides a simulated interface for working with generated proxy objects and testing outbound messages.<br>
+SM59: Maintains HTTP destination settings.<br>
+SAP Integration Suite: Receives and processes the XI messages through an integration flow.</p>
+
+<p>Training ERP GUI is not an SAP application server or a replacement for SAP PI/PO. It is a learning and testing environment designed to reproduce selected integration concepts.</p>
+
+<h2>2. Prerequisites</h2>
+
+<p>Before starting, prepare the following:</p>
+
+<ol>
+	<li>Training ERP GUI installed and running.</li>
+	<li>Access to DesignObjectCreator. (optinal)</li>
+	<li>An SAP BTP subaccount with Integration Suite access.</li>
+	<li>An integration flow configured with an XI sender adapter.</li>
+	<li>A deployed integration flow and its endpoint URL.</li>
+	<li>Appropriate authentication credentials and authorization to invoke the endpoint.</li>
+</ol>
+
+<p>The sender and receiver configurations must use compatible message structures and communication settings.</p>
+
+<h2>3. Creating Design Objects with DesignObjectCreator</h2>
+
+<p>Before creating a proxy object, we need to define the integration interface and its message structure.</p>
+
+<p>For this purpose, I developed a tool called DesignObjectCreator.</p>
+
+<p>DesignObjectCreator manages the &quot;design_objects.json&quot; file used to store integration design object definitions.</p>
+
+<p>Instead of editing the JSON file manually, the tool provides a way to maintain design objects such as Service Interfaces and Data Types.</p>
+
+<p>You may access PyDesignObjectCreator from gitlab repostory link below:</p>
+
+<pre class="code-block"><code>https://gitlab.com/alp.mustf/pydesignobjectcreator.git</code></pre>
+
+<h3>3.1 Creating a Service Interface
+</h3>
+
+<p>After defining the message structure, the next step is creating a Service Interface.</p>
+
+<p>For our example, we will use the following interface definition:</p>
+
+<table>
+	<tr>
+		<th>Property</th>
+		<th>Example value</th>
+	</tr>
+	<tr>
+		<td>Service Interface</td>
+		<td>SI_Employee_Out</td>
+	</tr>
+	<tr>
+		<td>Namespace</td>
+		<td>urn:training:erp:employee</td>
+	</tr>
+	<tr>
+		<td>Direction</td>
+		<td>Outbound</td>
+	</tr>
+	<tr>
+		<td>Communication</td>
+		<td>Asynchronous</td>
+	</tr>
+	<tr>
+		<td>Message Structure</td>
+		<td>EmployeeMessage</td>
+	</tr>
+</table>
+
+
+
+<p>These are example design values, not a prescribed JSON schema.</p>
+
+<p>Using DesignObjectCreator, create the Service Interface and associate it with the appropriate message definition.</p>
+
+<p>The resulting design objects are maintained in:</p>
+
+<pre class="code-block"><code>design_objects.json</code></pre>
+
+<p>This file acts as the local repository of design metadata for the simulated integration environment. you must to copy this file to &quot;data&quot; directory in Trainin Erp Gui</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img01.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img01.png" alt="py design object creator" loading="lazy" decoding="async"></a></figure>
+
+<p>Important: DesignObjectCreator does not create an actual SAP Enterprise Services Repository object. It maintains definitions used by Training ERP GUI.</p>
+
+<h3>Alternative Aproach to Create Sproxy Objects</h3>
+
+<p>You may just add json below to &quot;data/design_objects.json&quot; file to see SI_Employee_Out interface in SPROXY</p>
+
+<pre class="code-block"><code>{
+    &quot;software_component&quot;: &quot;EmployeeMaster&quot;,
+    &quot;namespaces&quot;: [
+      {
+        &quot;namespace&quot;: &quot;urn:training:erp:employee&quot;,
+        &quot;service_interfaces&quot;: [
+          {
+            &quot;direction&quot;: &quot;&quot;,
+            &quot;mode&quot;: &quot;asyncronous&quot;,
+            &quot;name&quot;: &quot;SI_Employee_Out&quot;,
+            &quot;description&quot;: &quot;&quot;
+          }
+        ]}]}</code></pre>
+
+<h2>4. Configuring the HTTP Destination in SM59</h2>
+
+<p>The next step is configuring the target connection.</p>
+
+<p>In Training ERP GUI, open the simulated SM59 transaction and create an HTTP destination.</p>
+
+<p>For this example, we will use an HTTP connection of Type G.</p>
+
+<p>Example configuration:</p>
+
+
+<table>
+	<tr>
+		<th>Field</th>
+		<th>Example</th>
+	</tr>
+	<tr>
+		<td>RFC Destination</td>
+		<td>BTP_XI_RECEIVER</td>
+	</tr>
+	<tr>
+		<td>Target Host</td>
+		<td>my-tenant.example.com</td>
+	</tr>
+	<tr>
+		<td>Path Prefix	</td>
+		<td>/xi/employee</td>
+	</tr>
+	<tr>
+		<td>Protocol</td>
+		<td>HTTPS</td>
+	</tr>
+	<tr>
+		<td>Authentication</td>
+		<td>Client Credentials as Basic auth</td>
+	</tr>
+</table>
+
+
+<p>Replace the example hostname and path with the actual deployed XI sender endpoint from your SAP Integration Suite tenant.</p>
+
+<p>Do not include the protocol twice when constructing the URL.</p>
+
+<p>The expected target URL would look like:</p>
+
+<pre class="code-block"><code>https://my-tenant.example.com:443/cxf/employee</code></pre>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img02.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img02.png" alt="url configuration in the rfc destination" loading="lazy" decoding="async"></a><figcaption>url configuration in the rfc destination</figcaption></figure>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img03.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img03.png" alt="authntication configuration in the rfc destination" loading="lazy" decoding="async"></a><figcaption>authntication configuration in the rfc destination</figcaption></figure>
+
+<h2>5. Creating an Integration Flow in SAP Integration Suite</h2>
+
+<p>Now we need to prepare the receiving integration flow.</p>
+
+<p>Open SAP Integration Suite and navigate to Cloud Integration.</p>
+
+<p>Create an integration flow containing:</p>
+
+<p>A Sender participant.<br>
+An XI sender adapter.<br>
+A processing step, such as a Content Modifier or mapping.<br>
+A Receiver participant or another suitable processing endpoint.</p>
+
+<p>Configure the XI sender adapter according to the requirements of your integration scenario.</p>
+
+<p>For example, the sender adapter&#x27;s address might be:</p>
+
+<pre class="code-block"><code>/employee</code></pre>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img04.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img04.png" alt="iflow configuration" loading="lazy" decoding="async"></a></figure>
+
+<p>The complete endpoint URL must be taken from the deployed integration flow and its runtime environment.</p>
+
+<p>After configuring the integration flow, deploy it and confirm that it is running.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img05.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img05.png" alt="monnitoring" loading="lazy" decoding="async"></a></figure>
+
+<h2>6. Configuring the Integration Engine with SXMB_ADM
+</h2>
+
+<p>Before sending XI messages from Training ERP GUI, we need to configure the Integration Engine.</p>
+
+<p>In an SAP system, the SXMB_ADM transaction is used to maintain Integration Engine configuration settings, including the role of the Integration Engine and the destination used for integration communication.</p>
+
+<p>Training ERP GUI provides a simulated SXMB_ADM environment to demonstrate how these configurations influence outbound XI message processing.</p>
+
+<h3>6.1 Understanding the Integration Engine
+</h3>
+
+<p>The Integration Engine is responsible for processing XI messages and forwarding them according to the configured integration environment.</p>
+
+<p>In a traditional SAP PI/PO landscape, the communication architecture typically looks like this:</p>
+
+<pre class="code-block"><code>SAP Application System
+        |
+        | ABAP Proxy
+        v
+Integration Engine
+        |
+        | XI Protocol
+        v
+SAP PI/PO
+        |
+        v
+Receiver System</code></pre>
+
+<p>For our training scenario, we want to send the XI message directly to SAP Integration Suite instead of SAP PI/PO.</p>
+
+<pre class="code-block"><code>Training ERP GUI
+        |
+        | SPROXY
+        v
+Simulated Integration Engine
+        |
+        | SXMB_ADM Configuration
+        v
+SM59 HTTP Destination
+        |
+        | HTTPS / XI
+        v
+SAP BTP Integration Suite
+        |
+        | XI Sender Adapter
+        v
+Integration Flow</code></pre>
+
+<h3>6.2 Configuring Sender/Receiver ID
+</h3>
+
+<p>Open the simulated SXMB_ADM transaction in Training ERP GUI.</p>
+
+<p>Select &quot;Configure Sender/Receiver ID&quot; in the left menu.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img06.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img06.png" alt="sender Receive ID" loading="lazy" decoding="async"></a></figure>
+
+<p>Click to &quot;Add new record&quot; button</p>
+
+<figure class="smaller"><a href="../assets/images/teg/t02-img07.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img07.png" alt="config" loading="lazy" decoding="async"></a></figure>
+
+<p>Fill fields according to below table.</p>
+
+
+<table>
+	<tr>
+		<th>Paramter</th>
+		<th>Value</th>
+	</tr>
+	<tr>
+		<td>Sender/receiver ID</td>
+		<td>SEND_EMPLOYEE</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>SI_Employee_Out</td>
+	</tr>
+	<tr>
+		<td>Interface Name</td>
+		<td>SI_Employee_Out</td>
+	</tr>
+	<tr>
+		<td>Interface Namspace</td>
+		<td>urn:training:erp:employee</td>
+	</tr>
+	<tr>
+		<td>Other fields</td>
+		<td>*</td>
+	</tr>
+</table>
+
+
+<h3>6.3 Configuring Integration Engine Configuration</h3>
+
+<p>Select &quot;Integration Engine Configuration&quot; in the left menu.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img08.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img08.png" alt="config" loading="lazy" decoding="async"></a></figure>
+
+<p>Click &quot;Add new record&quot; button in the new window. which will open a new popup to create a new record.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img09.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img09.png" alt="config" loading="lazy" decoding="async"></a></figure>
+
+<p>Fill the form according to below table.</p>
+
+<p>Parameter Value<br>
+Category RUNTIME<br>
+Parameters <br>
+Select SEND_EMPLOYEE<br>
+Curren Value </p>
+
+
+<table>
+	<tr>
+		<th>Paramter</th>
+		<th>Value</th>
+	</tr>
+	<tr>
+		<td>Category</td>
+		<td>RUNTIME</td>
+	</tr>
+	<tr>
+		<td>Parameters</td>
+		<td>IS_URL</td>
+	</tr>
+	<tr>
+		<td>Select</td>
+		<td>SEND_EMPLOYEE</td>
+	</tr>
+	<tr>
+		<td>Curren Value</td>
+		<td>dest://BTP_XI_RECEIVER</td>
+	</tr>
+</table>
+
+
+
+<p>Click the &quot;Save&quot; Button</p>
+
+<h2>7. Sending the XI Message from SPROXY</h2>
+
+<p>Return to Training ERP GUI and open the SPROXY simulation.</p>
+
+<p>Select the outbound proxy object created for the employee interface.</p>
+
+<p>Prepare a sample payload:</p>
+
+<pre class="code-block"><code>&lt;EmployeeMessage&gt;
+    &lt;Employee&gt;
+        &lt;EmployeeID&gt;10001&lt;/EmployeeID&gt;
+        &lt;FirstName&gt;Mustafa&lt;/FirstName&gt;
+        &lt;LastName&gt;Alp&lt;/LastName&gt;
+        &lt;Department&gt;IT&lt;/Department&gt;
+    &lt;/Employee&gt;
+&lt;/EmployeeMessage&gt;</code></pre>
+
+<p>Select the configured Servi interface</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img10.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img10.png" alt="config" loading="lazy" decoding="async"></a></figure>
+
+<p>Click &quot;Test&quot; button to start sptoxy testing tool.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img11.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img11.png" alt="config" loading="lazy" decoding="async"></a></figure>
+
+<p>Paste example message to text field and click &quot;Execute&quot; above &quot;Request&quot; label.</p>
+
+<h2>8. Monitoring Messages in SAP Integration Suite</h2>
+
+<p>After sending the message, open SAP Integration Suite and navigate to:</p>
+
+<p>Monitor → Integrations and APIs → Message Processing</p>
+
+<p>Locate the message using the available monitoring information, such as its processing time, integration flow, or message identifier.</p>
+
+<p>Review:</p>
+<ul>
+<li>Processing status.</li>
+<li>Sender adapter information.</li>
+<li>Message processing log.</li>
+<li>Error details, if applicable.</li>
+<li>Payload or trace information, when tracing is enabled and access is authorized.</li>
+</ul>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img12.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img12.png" alt="monitoring" loading="lazy" decoding="async"></a></figure>
+
+<p>A successful HTTP response does not necessarily mean the business transaction completed successfully.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img13.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img13.png" alt="monitoring" loading="lazy" decoding="async"></a></figure>
+
+<p>You may see the message in SXMB_MONI screen. Message ID shoulc match SapMessageIdEx header in the Sap Integration Suit message monitoring.</p>
+
+<figure class="blog-image"><a href="../assets/images/teg/t02-img14.png" target="_blank" rel="noopener"><img src="../assets/images/teg/t02-img14.png" alt="monitoring" loading="lazy" decoding="async"></a></figure>
+
+<h2>9. Troubleshooting Common Issues</h2>
+
+<h3>HTTP 401 — Unauthorized</h3>
+
+<p>Possible causes include invalid credentials, incorrect authentication configuration, or missing permissions.</p>
+
+<p>Verify the authentication mechanism required by the deployed endpoint.</p>
+
+<h3>HTTP 403 — Forbidden</h3>
+
+<p>The request may be authenticated but not authorized to invoke the integration endpoint.</p>
+
+<p>Check the assigned roles, runtime permissions, and endpoint configuration.</p>
+
+<h3>HTTP 404 — Not Found</h3>
+
+<p>Confirm that the integration flow is deployed and that the configured endpoint path is correct.</p>
+
+<h3>HTTP 500 — Internal Server Error</h3>
+
+<p>Inspect the SAP Integration Suite message processing log and exception details.</p>
+
+<p>For XI communication, pay particular attention to malformed SOAP headers, missing payload attachments, invalid content identifiers, and incompatible protocol structures.</p>
+
+<h2>10. Why Use Training ERP GUI?</h2>
+
+<p>For developers learning enterprise integration, having access to a complete ERP system is not always practical.</p>
+
+<p>Training ERP GUI offers a way to experiment with selected integration concepts in a local environment.</p>
+
+<p>By combining DesignObjectCreator, SPROXY simulation, HTTP destination configuration, and SAP Integration Suite, developers can explore the relationship between interface design and runtime message processing.</p>
+
+<p>The project is particularly useful for understanding:</p>
+
+
+<ul>
+	<li>>How interface definitions relate to proxy objects.</li>
+	<li>How XML schemas describe message structures.</li>
+	<li>How outbound destinations are configured.</li>
+	<li>How XI messages are transmitted.</li>
+	<li>How integration flows process incoming messages.</li>
+	<li>How to troubleshoot connectivity and message-processing errors.</li>
+</ul>
+
+<h2>11. Conclusion</h2>
+
+<p>Sending XI messages to SAP BTP Integration Suite requires both design-time configuration and runtime communication.</p>
+
+<p>In this tutorial, we explored how to use Training ERP GUI to simulate the sender-side workflow, starting with interface definitions in DesignObjectCreator and continuing through proxy testing, destination configuration, and message monitoring.</p>
+
+<p>DesignObjectCreator helps maintain Service Interface definitions and generate XSD data types, while Training ERP GUI provides the simulated runtime environment for testing outbound integration messages.</p>
+
+<p>Together, these tools offer a practical approach to learning enterprise integration architecture without requiring a full SAP ERP landscape.</p>
+
+<h2>Disclaimer</h2>
+
+<p>Training ERP GUI and DesignObjectCreator are independently developed educational tools. They are not affiliated with, endorsed by, or sponsored by SAP SE. SAP product names are used solely to identify the technologies discussed.</p><div class="actions"><a class="button" href="../blog.html">Blog</a></div></article></main>
+					<footer>
+						<div class="wrap footer-inner">
+							<span>© 2026 Mustafa Alp · Integration notes & experience</span>
+							<a href="https://www.linkedin.com/in/mustafa-alp/">Connect on LinkedIn</a>
+						</div>
+					</footer>
+	</body>
+</html>
